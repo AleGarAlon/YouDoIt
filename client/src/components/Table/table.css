@@ -1,0 +1,12 @@
+.table {
+    background-color: slategray;
+    border-radius: 5px;
+    padding: 30px;
+    width: 80%;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
