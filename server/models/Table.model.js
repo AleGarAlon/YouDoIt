@@ -9,7 +9,11 @@ const taskSchema = new Schema(
     },
     users: {
       type: Schema.Types.ObjectId,
-      ref: "Character",
+      ref: "User",
+    },
+    tasks: {
+      type: Schema.Types.ObjectId,
+      ref: "Task",
     },
   },
   {

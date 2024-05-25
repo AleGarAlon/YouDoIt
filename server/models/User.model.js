@@ -18,11 +18,10 @@ const userSchema = new Schema(
       type: String,
       required: [true, "Name is required."],
     },
-    tasks: {
-      type: [String],
-    },
+
     tables: {
-      type: [String],
+      type: Schema.Types.ObjectId,
+      ref: "Table",
     },
   },
   {
