@@ -18,10 +18,27 @@ const userSchema = new Schema(
       type: String,
       required: [true, "Name is required."],
     },
-
-    tables: {
-      type: Schema.Types.ObjectId,
-      ref: "Table",
+    tables: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Table",
+      },
+    ],
+    profileColor: {
+      type: String,
+      enum: [
+        "white",
+        "green",
+        "blue",
+        "pink",
+        "red",
+        "yellow",
+        "purple",
+        "orange",
+        "gray",
+      ],
+      default: "white",
+      required: [true, "Profile color is required."],
     },
   },
   {

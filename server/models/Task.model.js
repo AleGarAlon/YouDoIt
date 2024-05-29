@@ -1,19 +1,42 @@
 const { Schema, model } = require("mongoose");
 
-// TODO: Please make sure you edit the User model to whatever makes sense in this case
 const taskSchema = new Schema(
   {
     name: {
       type: String,
-      required: [true, "Name is required."],
+      required: true,
     },
-    user: {
+    position: {
+      type: Number,
+      required: true,
+    },
+    status: {
+      type: String,
+      enum: ["pending", "in-progress", "completed"],
+      default: "pending",
+    },
+    color: {
+      type: String,
+      enum: [
+        "white",
+        "green",
+        "blue",
+        "pink",
+        "red",
+        "yellow",
+        "purple",
+        "orange",
+        "gray",
+      ],
+      default: "white",
+    },
+    table: {
       type: Schema.Types.ObjectId,
-      ref: "User",
+      ref: "Table",
+      required: true,
     },
   },
   {
-    // this second object adds extra properties: `createdAt` and `updatedAt`
     timestamps: true,
   }
 );

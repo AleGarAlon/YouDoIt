@@ -48,7 +48,7 @@ function App() {
           }
         />
         <Route
-          path="/table"
+          path="/table/:id"
           element={
             <IsPrivate>
               <TablePage />

@@ -1,3 +1,4 @@
+import React from "react";
 import { Task } from "../Task/Task";
 import "./table.css";
 
@@ -10,11 +11,20 @@ function Table({ tasks }) {
   return (
     <div className="table">
       <h1>Table</h1>
-      <SortableContext items={tasks} strategy={verticalListSortingStrategy}>
-        {tasks.map((task) => (
-          <Task id={task.id} name={task.name} key={task.id} />
-        ))}
-      </SortableContext>
+      {tasks ? (
+        <SortableContext items={tasks} strategy={verticalListSortingStrategy}>
+          {tasks.map((task) => (
+            <Task
+              id={task._id}
+              name={task.name}
+              color={task.color}
+              key={task._id}
+            />
+          ))}
+        </SortableContext>
+      ) : (
+        <p>No hay tareas disponibles.</p>
+      )}
     </div>
   );
 }

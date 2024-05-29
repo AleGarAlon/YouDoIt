@@ -1,15 +1,16 @@
 import React from "react";
 import "./task.css";
-
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-export const Task = ({ id, name }) => {
+
+export const Task = ({ id, name, color }) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id });
 
   const style = {
     transition,
     transform: CSS.Transform.toString(transform),
+    backgroundColor: color || "white",
   };
 
   return (
@@ -25,3 +26,5 @@ export const Task = ({ id, name }) => {
     </div>
   );
 };
+
+export default Task;

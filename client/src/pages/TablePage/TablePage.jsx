@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { useParams } from "react-router-dom";
 import {
   DndContext,
   KeyboardSensor,
@@ -16,19 +17,36 @@ import {
   sortableKeyboardCoordinates,
 } from "@dnd-kit/sortable";
 import { NewTask } from "../../components/NewTaks/NewTask";
+import Loading from "../../components/Loading/Loading";
+import axios from "axios";
+import { AuthContext } from "../../context/auth.context";
 
 function TablePage() {
-  const [tasks, setTasks] = useState([
-    { id: 1, name: "Walk the dogs" },
-    { id: 2, name: "Pet the rabbit" },
-    { id: 3, name: "Feed the cats" },
-  ]);
+  const [tasks, setTasks] = useState([""]);
+  const [isLoading, setIsLoading] = useState(true);
+  const { id } = useParams();
+  const { user } = useContext(AuthContext);
 
-  const addTask = (name) => {
-    setTasks((tasks) => [...tasks, { id: tasks.length + 1, name }]);
+  const getTable = async () => {
+    try {
+      const res = await axios.get(
+        `${process.env.REACT_APP_SERVER_URL}/table/${id}`
+      );
+      const data = res.data;
+
+      setTasks(data.table.tasks);
+    } catch (error) {
+      console.error("Error fetching table:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const getTaskPos = (id) => tasks.findIndex((task) => task.id === id);
+  const addTask = (task) => {
+    setTasks((tasks) => [...tasks, task]);
+  };
+
+  const getTaskPos = (id) => tasks.findIndex((task) => task._id === id);
 
   const handleDragEnd = (e) => {
     const { active, over } = e;
@@ -38,7 +56,15 @@ function TablePage() {
       const originalPos = getTaskPos(active.id);
       const newPos = getTaskPos(over.id);
 
-      return arrayMove(tasks, originalPos, newPos);
+      const newTasks = arrayMove(tasks, originalPos, newPos);
+
+      axios
+        .post(`${process.env.REACT_APP_SERVER_URL}/table/${id}/reorder-tasks`, {
+          tasks: newTasks,
+        })
+        .catch((error) => console.error("Error updating task order:", error));
+
+      return newTasks;
     });
   };
 
@@ -48,17 +74,25 @@ function TablePage() {
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   );
 
+  useEffect(() => {
+    getTable();
+  }, []);
+
   return (
     <div className="tablePage">
       <h1>TablePage</h1>
-      <NewTask onSubmit={addTask} />
-      <DndContext
-        sensors={sensors}
-        onDragEnd={handleDragEnd}
-        collisionDetection={closestCorners}
-      >
-        <Table tasks={tasks} />
-      </DndContext>
+      <NewTask onSubmit={addTask} tableId={id} />
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <DndContext
+          sensors={sensors}
+          onDragEnd={handleDragEnd}
+          collisionDetection={closestCorners}
+        >
+          <Table tasks={tasks} />
+        </DndContext>
+      )}
     </div>
   );
 }
